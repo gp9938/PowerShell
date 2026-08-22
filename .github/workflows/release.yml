@@ -18,7 +18,7 @@ jobs:
       - name: Archive PowerShell Scripts
         # This zips your scripts directory (or specific files) into a single archive
         run: |
-          zip -r powershell-scripts.zip ./*.ps1
+          zip -r PowerShell-scripts.zip ./*.ps1
 
       - name: Create GitHub Release and Upload Asset
         uses: softprops/action-gh-release@v2
