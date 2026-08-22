@@ -23,4 +23,4 @@ jobs:
       - name: Create GitHub Release and Upload Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: PowerShell.zip
+          files: PowerShell-scripts.zip
