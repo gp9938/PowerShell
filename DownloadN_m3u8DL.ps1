@@ -34,10 +34,16 @@ folder.
 The name for the saved video file.  This defaults to an automatically created date-based filename.
 
 .EXAMPLE
-.\download_m3u8.ps1  "https://cloudfront.jove.com/CDNSource/hls/11571/11571_.m3u8?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jbG91ZGZyb250LmpvdmUuY29tL0NETlNvdXJjZS9obHMvMTE1NzEqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3MDM1NjY3fX19XX0_&Signature=o1HmQ2DDRGWyicerdbM2FQFn4UFnmq1lzznM8Dzu57MoGRWBkAIGMAcSryTopL308NK1vCBdG~22wmtkvPMzTJB7Idtg8cbCz5uVPSe2qi~c3voi~ZoQiPHHmsD-dl6jcrkdoBh8o2b3cfr9nd47zHXcx7fZifR5mo2kMWrdsy~yimM6NEd8sWOfhfD9WZz9XYh9yewCaSWFykoMiLtzrih6tb~6QvhZCyd6sWR7yuPNwaGIu35LYrSNoPJeHt7xjRd3v4M1rwmlNbr4ChFqg5gz-~PfKUBDLX-vysiez7fj2ByJk1qMtW41ovmNhOY8NGXqGXgq4GJrVVHIaDmpQg__&Key-Pair-Id=KJU2718WA7HCS" C:\temp myvideo.mp4
+.\DownloadN_m3u8.ps1  "https://cloudfront.jove.com/CDNSource/hls/11571/11571_.m3u8?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jbG91ZGZyb250LmpvdmUuY29tL0NETlNvdXJjZS9obHMvMTE1NzEqIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJBV1M6RXBvY2hUaW1lIjoxNzg3MDM1NjY3fX19XX0_&Signature=o1HmQ2DDRGWyicerdbM2FQFn4UFnmq1lzznM8Dzu57MoGRWBkAIGMAcSryTopL308NK1vCBdG~22wmtkvPMzTJB7Idtg8cbCz5uVPSe2qi~c3voi~ZoQiPHHmsD-dl6jcrkdoBh8o2b3cfr9nd47zHXcx7fZifR5mo2kMWrdsy~yimM6NEd8sWOfhfD9WZz9XYh9yewCaSWFykoMiLtzrih6tb~6QvhZCyd6sWR7yuPNwaGIu35LYrSNoPJeHt7xjRd3v4M1rwmlNbr4ChFqg5gz-~PfKUBDLX-vysiez7fj2ByJk1qMtW41ovmNhOY8NGXqGXgq4GJrVVHIaDmpQg__&Key-Pair-Id=KJU2718WA7HCS" C:\temp myvideo.mp4
 
 .LINK
 https://github.com/nilaoda/N_m3u8DL-RE
+
+.LINK
+https://github.com//BtbN/FFmpeg-Builds
+
+.LINK
+https://github.com/gp9938/PowerShell
 
 .NOTES
 Created: 2026-08-19
@@ -46,11 +52,26 @@ License: GPL3
 
 #>
 
-param ([Parameter(Mandatory=$true)][string]$VideoUrl,
-       [string]$DownloadFolder = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path,
-       [string]$VideoName = $null )
+[CmdletBinding(DefaultParameterSetName = 'NoParameters')]
+param ([Parameter(ParameterSetName='Standard',Mandatory=$true,Position=0)][string]$VideoUrl,
+       [Parameter(ParameterSetName='Standard',Position=1)][string]$DownloadFolder = (New-Object -ComObject Shell.Application).NameSpace('shell:Downloads').Self.Path,
+       [Parameter(ParameterSetName='Standard',Position=2)][string]$VideoName = $null )
 
-$DownloadApp="D:\Users\petra\Downloads\N_m3u8DL-RE_v0.6.0-beta_win-x64_20260629\N_m3u8DL-RE.exe"
+$DownloadApp = "D:\Users\petra\Downloads\N_m3u8DL-RE_v0.6.0-beta_win-x64_20260629\N_m3u8DL-RE.exe"
+$DownloadApp = (Split-Path $MyInvocation.MyCommand.Path) + "\N_m3u8DL-RE.exe"
+
+
+if (!$VideoUrl) {
+    write-output( "No arguments provided, usage below:`r`n" )
+    Get-Help $MyInvocation.MyCommand.Path
+    Exit(1)
+}
+else {
+    if (![System.Uri]::IsWellFormedUriString($VideoUrl, [System.UriKind]::Absolute)) {
+	write-output( "`r`nSupplied VideoUrl `"$VideoUrl`" is not valid. Exiting...`r`n" );
+	Exit(1)
+    }
+}
 
 if ($VideoName)
 {
