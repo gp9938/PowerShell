@@ -1,0 +1,1 @@
+winget update --all --disable-interactivity --include-unknown --accept-source-agreements --accept-package-agreements
